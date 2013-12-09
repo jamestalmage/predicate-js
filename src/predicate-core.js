@@ -123,12 +123,14 @@ function addCompositePredicate(name,matcher){
 
 
 function assertThat(reason,actual,matcher){
-  if(!matcher){
+  if(matcher){
+    reason = reason + "\n";
+  } else {
     matcher = actual;
     actual = reason;
     reason = "";
   }
   if(!matcher.matches(actual)){
-    throw new Error(reason + "\n\tExpected:" + matcher.describe("") + "\n\tActual: " + actual);
+    throw new Error(reason + "\tExpected:" + matcher.describe("") + "\n\tActual: " + actual);
   }
 }
