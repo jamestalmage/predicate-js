@@ -1,7 +1,7 @@
 require('project-files')(module,exports,{
   source:[
-    'src/predicate.js',
-    'src/*.js'
+    'src/predicate-core.js',
+    'src/predicate-lang.js'
   ],
   test:[
     'test/*-test.js'

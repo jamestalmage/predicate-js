@@ -33,4 +33,20 @@ describe('predicate',function(){
     assertThat(0, is.not.ok);
   });
 
+  it('4<5<6',function(){
+    var gr4 = is.greaterThan(4);
+    var lt6 = is.lessThan(6);
+    assertThat(5, lt6);
+    assertThat(5, gr4);
+    assertThat(5, lt6.and.greaterThan(4));
+  });
+
+  it('4<5<6',function(){
+    var gr4 = is.greaterThan(4);
+    var lt6 = is.lessThan(6);
+    assertThat(5, lt6);
+    assertThat(5, gr4);
+    assertThat(5, lt6.and(gr4).and.lessThan(10));
+  });
+
 });
