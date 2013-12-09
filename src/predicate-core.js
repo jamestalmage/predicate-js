@@ -22,11 +22,6 @@ ChainablePredicate.prototype.matches = function(value,next){
       return self.matcher.matches(val,next);
     });
   }
-  if(this._lhs){
-    return this.matcher.matches(value,function(val){
-       return self._lhs.matches(val);
-    },next);
-  }
   return next(value);
 };
 
@@ -37,11 +32,6 @@ ChainablePredicate.prototype.describe = function(description,next){
     return this._parent.describe(description,function(desc){
       return self.matcher.describe(desc,next);
     });
-  }
-  if(this._lhs){
-    return this.matcher.describe(description,function(desc){
-      return self._lhs.describe(desc);
-    },next);
   }
   return next(description);
 };
