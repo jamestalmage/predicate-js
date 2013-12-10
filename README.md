@@ -5,9 +5,9 @@ Chainable Predicates for JS
 
 The goal is an assertion library that combines Chai's chainable syntax (i.e. `has.lengthOf.lessThan(4)`), but adds the condition that predicates should be first class objects allowing compositional reuse:
 ```js
-var lt6 = is.lessThan(6);
-var gt10 = is.lessThan(7);
-var between6and10 = lt6.and(gt10);
+var lt10 = is.lessThan(10);
+var gt6 = is.greaterThan(6);
+var between6and10 = gt6.and(lt10);
 
 assertThat(7, between6and10);
 assertThat(8, between6and10);
