@@ -136,12 +136,12 @@ addChainablePredicate('a','an',{
     return {
       matches:function(value,next){
         //console.log(type(value) + ' === ' + expectedType);
-        return next(type(value) === expectedType)
+        return next(type(value) === expectedType);
       },
       describe:function(description, next){
         return description + ' ' + article + expectedType + next("");
       }
-    }
+    };
   }
 });
 

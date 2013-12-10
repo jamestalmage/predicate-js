@@ -47,13 +47,13 @@ CompositePredicate.prototype = new BasePredicate();
 CompositePredicate.prototype.matches = function(value,next){
   var self = this;
   next = next || function(val){return val;};
-  function lhs(val){
+  var lhs = function (val){
     return self._lhs.matches(val);
-  }
+  };
   if(this._rhs){
-    function rhs (val){
+    var rhs = function (val){
       return self._rhs.matches(val);
-    }
+    };
     return next(this.matcher.matches(value,lhs,rhs));
   }
   return this.matcher.matches(value,lhs,next);
@@ -66,22 +66,25 @@ CompositePredicate.prototype.describe = function(description,next){
     return self._lhs.describe(desc);
   }
   if(this._rhs){
-    function rhs (desc){
+    var rhs = function rhs (desc){
       return self._rhs.describe(desc);
-    }
+    };
     return next(this.matcher.describe(description,lhs,rhs));
   }
   return this.matcher.describe(description,lhs,next);
 };
 
+
+/* jshint -W103 */
 function makeChainable(matcher,self){
   if(matcher.execute){
-    function execute(){
+    var execute = function execute(){
       return new ChainablePredicate(
         matcher.execute.apply(null, Array.prototype.slice.call(arguments)),
         self
       );
-    }
+    };
+    //TODO: Brute force copy if __proto__ isn't supported
     execute.__proto__ = new ChainablePredicate(matcher,self);
     return execute;
   }
@@ -96,9 +99,11 @@ function makeComposite(matcher,lhs){
       rhs
     );
   }
+  //TODO: Brute force copy if __proto__ isn't supported
   execute.__proto__ = new CompositePredicate(matcher,lhs);
   return execute;
 }
+/* jshint +W103 */
 
 function _addChainablePredicate(name,matcher){
   Object.defineProperty(
@@ -109,7 +114,7 @@ function _addChainablePredicate(name,matcher){
         return makeChainable(matcher,this);
       }
     }
-  )
+  );
 }
 
 function _addCompositePredicate(name,matcher){
@@ -121,7 +126,7 @@ function _addCompositePredicate(name,matcher){
         return makeComposite(matcher,this);
       }
     }
-  )
+  );
 }
 
 function addChainablePredicate(names,matcher){

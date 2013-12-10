@@ -20,7 +20,12 @@ module.exports = function(grunt){
       }
     },
     jshint:{
-      src:['src/*.js'],
+      src:{
+        options:{
+          'laxcomma':true
+        },
+        src:['src/*.js']
+      },
       unit:{
         options:{
           '-W030':true
