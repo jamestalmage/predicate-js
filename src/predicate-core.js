@@ -75,14 +75,17 @@ CompositePredicate.prototype.describe = function(description,next){
 };
 
 function makeChainable(matcher,self){
-  function execute(){
-    return new ChainablePredicate(
-      matcher.execute.apply(null, Array.prototype.slice.call(arguments)),
-      self
-    );
+  if(matcher.execute){
+    function execute(){
+      return new ChainablePredicate(
+        matcher.execute.apply(null, Array.prototype.slice.call(arguments)),
+        self
+      );
+    }
+    execute.__proto__ = new ChainablePredicate(matcher,self);
+    return execute;
   }
-  execute.__proto__ = new ChainablePredicate(matcher,self);
-  return execute;
+  return new ChainablePredicate(matcher,self);
 }
 
 function makeComposite(matcher,lhs){
@@ -97,7 +100,7 @@ function makeComposite(matcher,lhs){
   return execute;
 }
 
-function addChainablePredicate(name,matcher){
+function _addChainablePredicate(name,matcher){
   Object.defineProperty(
     BasePredicate.prototype,
     name,
@@ -109,7 +112,7 @@ function addChainablePredicate(name,matcher){
   )
 }
 
-function addCompositePredicate(name,matcher){
+function _addCompositePredicate(name,matcher){
   Object.defineProperty(
     BasePredicate.prototype,
     name,
@@ -121,6 +124,21 @@ function addCompositePredicate(name,matcher){
   )
 }
 
+function addChainablePredicate(names,matcher){
+  var args = Array.prototype.slice.call(arguments);
+  var nameCount = args.length - 1;
+  matcher = args[nameCount];
+  for (var i = 0; i < nameCount; i++) {
+    _addChainablePredicate(args[i],matcher);
+  }
+}
+function addCompositePredicate(names,matcher){
+  var nameCount = (arguments.length - 1);
+  matcher = arguments[nameCount];
+  for (var i = 0; i < nameCount; i++) {
+    _addCompositePredicate(arguments[i],matcher);
+  }
+}
 
 function assertThat(reason,actual,matcher){
   if(matcher){
