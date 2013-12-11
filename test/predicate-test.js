@@ -15,7 +15,12 @@ function assertNot(reason,actual,matcher){
 
 
 describe('predicates',function(){
-  var is = ChainablePredicate.prototype.is, has = ChainablePredicate.prototype.has;  // sugar
+  var
+    is = ChainablePredicate.prototype.is,
+    has = ChainablePredicate.prototype.has,
+    contains = ChainablePredicate.prototype.contains,
+    equals = ChainablePredicate.prototype.equals,
+    does = ChainablePredicate.prototype.does;  // sugar
 
   it('lessThan',function(){
     assertThat(5, is.lessThan(6));
@@ -179,7 +184,14 @@ describe('predicates',function(){
     assertThat({}, is.not.a('null'));
     assertThat({}, is.not.a('undefined'));
     assertThat({}, is.an('object'));
+  });
 
+  it('include(s) / contain(s)',function(){
+    assertThat([1,2,3],contains(1));
+    assertThat([1,2,3],contains(2));
+    assertThat([1,2,3],contains(3));
+    assertThat([1,2,3],does.not.contain(4));
+    assertNot([1,2,3],contains(4));
   });
 
   it('6 is not less than 5 passes',function(){
@@ -196,12 +208,87 @@ describe('predicates',function(){
     assertThat([1,2], has.lengthOf.not.lessThan(2));
   });
 
-  it('3 is ok',function(){
-     assertThat(3, is.ok);
+  it('ok',function(){
+    assertThat(3, is.ok);
+    assertThat({}, is.ok);
+    assertThat(true, is.ok);
+    assertThat(function(){}, is.ok);
+
+    assertThat(0, is.not.ok);
+    assertThat(null, is.not.ok);
+    assertThat(false, is.not.ok);
+    assertThat({}.undefinedValue, is.not.ok);
   });
 
-  it('0 is not ok',function(){
-    assertThat(0, is.not.ok);
+  it('true / false',function(){
+    assertThat(3, is.not.true);
+    assertThat({}, is.not.true);
+    assertThat(false, is.not.true);
+    assertThat(true, is.true);
+
+    assertThat(null, is.not.false);
+    assertThat({}.undefinedValue, is.not.false);
+    assertThat(0, is.not.false);
+    assertThat(false, is.false);
+  });
+
+  it('null / undefined / exist',function(){
+    assertThat(null, is.not.undefined);
+    assertThat(0, is.not.undefined);
+    assertThat(false, is.not.undefined);
+    assertThat(undefined, is.undefined);
+  });
+
+  it('null',function(){
+    assertThat(0, is.not.null);
+    assertThat(false, is.not.null);
+    assertThat(undefined, is.not.null);
+    assertThat(null, is.null);
+  });
+
+  it('exist',function(){
+    assertThat(0, does.exist);
+    assertThat(false, does.exist);
+    assertThat(null, does.not.exist);
+    assertThat(undefined, does.not.exist);
+  });
+
+  it('empty',function(){
+  //  assertThat(null,is.not.empty);
+    assertThat(undefined,is.not.empty);
+    assertThat(0,is.not.empty);
+    assertThat({a:false},is.not.empty);
+    assertThat([1],is.not.empty);
+    assertThat('a',is.not.empty);
+
+    assertThat([],is.empty);
+    assertThat({},is.empty);
+    assertThat('',is.empty);
+  });
+
+  it('arguments / Arguments',function(){
+    assertThat(null,is.not.Arguments);
+    assertThat(undefined,is.not.Arguments);
+    assertThat(0,is.not.Arguments);
+    assertThat({a:false},is.not.Arguments);
+    assertThat([1],is.not.Arguments);
+    assertThat(arguments,is.Arguments);
+
+    assertThat(null,is.not.arguments);
+    assertThat(undefined,is.not.arguments);
+    assertThat(0,is.not.arguments);
+    assertThat({a:false},is.not.arguments);
+    assertThat([1],is.not.arguments);
+    assertThat(arguments,is.arguments);
+  });
+
+  it('equals / equal / eq',function(){
+    assertThat(3,equals(3));
+    assertThat(3,does.not.equal(4));
+    var obj = {};
+    assertThat(obj,equals(obj));
+    assertThat(obj,does.not.eq({}));
+    assertThat('a',equals('a'));
   });
 
   it('4<5<6',function(){
